@@ -43,6 +43,8 @@ function handleRequest(req, res) {
 
 async function handleGet(req, res) {
     try {
+
+        console.log('API',process.env.API_KEY);
         //const response = await axios.get('https://jsonplaceholder.typicode.com/todos/2');
 
     const headers = {
@@ -70,27 +72,49 @@ async function handleGet(req, res) {
 }
 
 async function handlePost(req, res) {
-    const headers = {
-        Accept: "*/*",
-        "Content-Type": "application/json",
-      };
+
+    try{
+
+        const headers = {
+            Accept: "*/*",
+            "Content-Type": "application/json",
+          };
+      
+        const data = req.body;
+    
+        console.log("Response Data", data.title);
+    
+        await axios({
+            method: "POST",
+            headers,
+            url: "https://api.nstack.in/v1/todosss",
+            data: data,
+          });
+    
+        res.status(201).json({
+            status: 'success',
+            message: 'Successfully added',
+            data: data
+        });
+    }catch(error){
+
+        // if (error.response) {
+        //     // Get status code from the error response
+        //     console.error('Error Status Code:', error.response.status); // Example: 500
+        //     console.error('Error Response:', error.response.data);
+        //   } else if (error.request) {
+        //     // No response received from server (network or client error)
+        //     console.error('Request made, but no response:', error.request);
+        //   } else {
+        //     // Other errors
+        //     console.error('Error:', error.message);
+        //   }
+        console.log('ERROR',error);
+        return res.status(500).json({ status: res.status, message: error.message });
+    }
+    
+
   
-    const data = req.body;
-
-    console.log("Response Data", data.title);
-
-    await axios({
-        method: "POST",
-        headers,
-        url: "https://api.nstack.in/v1/todos",
-        data: data,
-      });
-
-    res.status(201).json({
-        status: 'success',
-        message: 'Successfully added',
-        data: data
-    });
     //res.status(201).send(`POST request successful with data: ${ JSON.stringify( data)}`);
 }
 
